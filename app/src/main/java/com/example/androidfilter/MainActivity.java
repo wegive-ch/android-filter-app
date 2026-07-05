@@ -107,7 +107,6 @@ public class MainActivity extends Activity {
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Uninstall", (dialog, which) -> {
                     if (PasswordStore.verifyRemovalPassword(this, input.getText().toString())) {
-                        stopLockTaskIfNeeded();
                         policyController.clearPoliciesForRemoval();
                         policyController.requestUninstall(this);
                     } else if (PasswordStore.isLockedOut(this)) {
@@ -166,14 +165,6 @@ public class MainActivity extends Activity {
         params.setMargins(0, dp(14), 0, 0);
         button.setLayoutParams(params);
         return button;
-    }
-
-    private void stopLockTaskIfNeeded() {
-        try {
-            stopLockTask();
-        } catch (IllegalStateException ignored) {
-            // Lock task was not active.
-        }
     }
 
     private void toast(String message) {

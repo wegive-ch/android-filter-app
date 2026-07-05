@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.net.VpnService;
 import android.net.Uri;
 import android.os.UserManager;
-import android.provider.Settings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,11 +68,6 @@ final class PolicyController {
 
         if (isDeviceOwner()) {
             try {
-                dpm.setLockTaskPackages(admin, new String[]{context.getPackageName()});
-            } catch (RuntimeException ignored) {
-                // Continue with the remaining policies if the device image rejects lock-task policy.
-            }
-            try {
                 dpm.setAlwaysOnVpnPackage(admin, context.getPackageName(), true);
             } catch (PackageManager.NameNotFoundException | RuntimeException ignored) {
                 // The VPN must be approved before some devices accept always-on lockdown.
@@ -83,12 +77,6 @@ final class PolicyController {
         }
 
         ensureBlockingVpn(activity);
-
-        try {
-            activity.startLockTask();
-        } catch (RuntimeException ignored) {
-            // Some devices require device-owner provisioning before lock-task mode can start.
-        }
     }
 
     void clearPoliciesForRemoval() {
@@ -98,7 +86,6 @@ final class PolicyController {
 
         if (isDeviceOwner()) {
             try {
-                dpm.setLockTaskPackages(admin, new String[]{});
                 clearUserRestrictions();
                 suspendRestrictedPackages(false);
                 dpm.setAlwaysOnVpnPackage(admin, null, false);
@@ -198,9 +185,5 @@ final class PolicyController {
                 // Package suspension support varies by package and device policy mode.
             }
         }
-    }
-
-    Intent deviceOwnerSettingsIntent() {
-        return new Intent(Settings.ACTION_SETTINGS);
     }
 }
