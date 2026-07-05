@@ -1,0 +1,9 @@
+{
+  "name": "android-filter-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "mkdir -p .gradle-home tmp && if [ ! -d \"${ANDROID_HOME:-}/platforms\" ]; then export ANDROID_HOME=$PWD/.android-sdk; fi && export ANDROID_SDK_ROOT=$ANDROID_HOME GRADLE_USER_HOME=$PWD/.gradle-home && gradle -Djava.io.tmpdir=$PWD/tmp :app:assembleRelease",
+    "release": "./scripts/release.sh"
+  }
+}

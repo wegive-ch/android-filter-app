@@ -1,0 +1,48 @@
+I want you to build an Android app. Should be backwards compatible to Android 13 
+
+The goal of the app is to prevent any access to the internet, apps, or anything on the device Except for listening to 
+music And looking at the photo gallery.
+
+Upon installing the app and opening it the first time, it will ask you for a password, and that password 
+will be used to uninstall the app. You cannot uninstall the app without a password. 
+
+You cannot delete the app. You cannot control anything that the app does without this startup password. 
+
+The app should ask the user upon installation for permissions to be able to block all functionality that is needed for the app, 
+for example, admin rights on the device and whatever is necessary. 
+
+If you open the app a second time, the only thing you can do with the app is uninstall it, and you have to give them a password. 
+
+Now, besides the initial password that was set when installing the app the first time, there should also be a 
+possibility to unlock with an administration password. 
+
+This password should be hard-coded in the app. The SHA-512 hash will be in a file called password.secret, and that hash should be embedded into the app. 
+When you try to uninstall the app and you put in the password, it should check against the password that was sent with the opening 
+of the app the first time. If that doesn't match, it should hash the input and check it against this hash of the administration password. 
+
+The icon for the app should be icon.png. 
+
+The UI when you open the app should be really simple:
+1. Show the icon and say, "Welcome to the app. Please set your password."
+2. When you put in the password, it should say, "Succeeded. The filter is on."
+3. On the subsequent opening of the app, you should see the filter is on and the button to uninstall the app.
+4. When you click uninstall, it will ask you for the password.
+5. If the password is correct, it should uninstall the app.
+6. If the password is incorrect 3 times, it should not allow uninstall attempts for 10 minutes.
+
+If you try to do a setting somewhere in Android that will circumvent the app or circumvent the permissions that are 
+blocked by the app, you should simply block it. Simply stop it. Abort the operation.
+For example, if you try to open a browser, the browser should not be there. If you try to install a browser, open 
+up the Play Store, it should just stop. It should not allow:
+- the opening of the Play Store
+- anything about installing new apps
+- opening up a Wi-Fi connection
+- opening up additional applications that have nothing to do with Photo Gallery and Music Store
+
+The build process should build an APK that I will install directly on the device. I will not go through the Play Store. 
+
+Please prepare all the dependencies or libraries I need, and there should be an npm file, package.json, With a script command build.
+
+Please describe the technical documentation and what is needed in libraries, whatever dependencies in the readme.md. 
+
+Please let me know if there's anything I'm missing. 

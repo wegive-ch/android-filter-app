@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Device Filter</string>
+    <string name="device_admin_description">Allows Device Filter to apply device restrictions while the filter is enabled.</string>
+
+    <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorAccent">#0f766e</item>
+    </style>
+</resources>

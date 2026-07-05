@@ -1,6 +1,9 @@
 # Gradle files
 .gradle/
+.gradle-home/
+.android-sdk/
 build/
+tmp/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -32,3 +35,5 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+appsecrets.properties

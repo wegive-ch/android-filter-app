@@ -1,0 +1,126 @@
+plugins {
+    id "com.android.application"
+}
+
+def passwordSecretFile = rootProject.file("password.secret")
+if (!passwordSecretFile.exists()) {
+    throw new GradleException("password.secret is required and must contain the SHA-512 hash of the administration password.")
+}
+
+def adminPasswordHash = passwordSecretFile.text.trim().toLowerCase(Locale.ROOT)
+if (!(adminPasswordHash ==~ /[a-f0-9]{128}/)) {
+    throw new GradleException("password.secret must contain exactly one lowercase or uppercase SHA-512 hex digest.")
+}
+
+def appSecretsFile = rootProject.file("appsecrets.properties")
+def appSecrets = new Properties()
+if (appSecretsFile.exists()) {
+    appSecretsFile.withInputStream { appSecrets.load(it) }
+}
+
+def secretValue = { String name ->
+    providers.environmentVariable(name).orNull ?: appSecrets.getProperty(name)
+}
+
+def releaseKeystoreFile = rootProject.file("my-release-key.jks")
+def releaseStorePassword = secretValue("RELEASE_STORE_PASSWORD")
+def releaseKeyAlias = secretValue("RELEASE_KEY_ALIAS")
+def releaseKeyPassword = secretValue("RELEASE_KEY_PASSWORD") ?: releaseStorePassword
+def hasReleaseSigning = releaseKeystoreFile.exists()
+        && releaseStorePassword
+        && releaseKeyAlias
+        && releaseKeyPassword
+
+android {
+    namespace "com.example.androidfilter"
+    compileSdk 35
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    defaultConfig {
+        applicationId "com.example.androidfilter"
+        minSdk 33
+        targetSdk 35
+        versionCode 1
+        versionName "1.0.0"
+
+        buildConfigField "String", "ADMIN_PASSWORD_SHA512", "\"${adminPasswordHash}\""
+    }
+
+    signingConfigs {
+        release {
+            if (hasReleaseSigning) {
+                storeFile releaseKeystoreFile
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+tasks.register("validateReleaseSigning") {
+    group = "verification"
+    description = "Checks that release signing inputs are present."
+
+    doLast {
+        def missing = []
+        if (!appSecretsFile.exists()
+                && !providers.environmentVariable("RELEASE_KEY_ALIAS").orNull
+                && !providers.environmentVariable("RELEASE_STORE_PASSWORD").orNull) {
+            missing << "appsecrets.properties or release signing environment variables"
+        }
+        if (!releaseKeystoreFile.exists()) {
+            missing << "my-release-key.jks"
+        }
+        if (!releaseKeyAlias) {
+            missing << "RELEASE_KEY_ALIAS"
+        }
+        if (!releaseStorePassword) {
+            missing << "RELEASE_STORE_PASSWORD"
+        }
+        if (!releaseKeyPassword) {
+            missing << "RELEASE_KEY_PASSWORD or RELEASE_STORE_PASSWORD"
+        }
+        if (!missing.isEmpty()) {
+            throw new GradleException("Missing release signing input(s): ${missing.join(', ')}")
+        }
+    }
+}
+
+tasks.register("signedRelease") {
+    group = "build"
+    description = "Builds the signed release APK using my-release-key.jks."
+    dependsOn "validateReleaseSigning", "assembleRelease"
+
+    doLast {
+        println "Signed APK: ${project.layout.buildDirectory.file('outputs/apk/release/app-release.apk').get().asFile}"
+    }
+}
+
+tasks.register("release") {
+    group = "build"
+    description = "Alias for signedRelease."
+    dependsOn "signedRelease"
+}
+
+afterEvaluate {
+    tasks.named("assembleRelease") {
+        mustRunAfter "validateReleaseSigning"
+    }
+}
