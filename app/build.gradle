@@ -32,7 +32,7 @@ def hasReleaseSigning = releaseKeystoreFile.exists()
         && releaseKeyPassword
 
 android {
-    namespace "com.example.androidfilter"
+    namespace "cch.wegive.androidfilter"
     compileSdk 35
 
     buildFeatures {
@@ -40,7 +40,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.androidfilter"
+        applicationId "ch.wegive.androidfilter"
         minSdk 33
         targetSdk 35
         versionCode 1

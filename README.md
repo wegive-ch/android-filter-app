@@ -133,3 +133,9 @@ The app requests VPN approval when needed. In device-owner mode it also attempts
 - `app/src/main/java/com/example/androidfilter/PolicyController.java`: device-admin/device-owner policies
 - `app/src/main/java/com/example/androidfilter/PasswordStore.java`: salted first-run password hash and lockout
 - `app/src/main/res/mipmap-hdpi/icon.png`: launcher icon asset
+
+## Commands to set it up
+ - db install app-debug.apk
+ - If it's already installed:
+ -- adb install -r app-debug.apk
+ -adb shell dpm set-device-owner ch.wegive.androidfilter/.WeGiveFilterDeviceAdminReceiver

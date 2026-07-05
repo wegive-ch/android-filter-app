@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
 
         <receiver
-            android:name=".FilterDeviceAdminReceiver"
+            android:name=".WeGiveFilterDeviceAdminReceiver"
             android:description="@string/device_admin_description"
             android:exported="true"
             android:label="@string/app_name"
