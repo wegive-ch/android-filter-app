@@ -8,31 +8,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.VpnService;
 import android.net.Uri;
-import android.os.UserManager;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 final class PolicyController {
     static final int REQUEST_ENABLE_ADMIN = 1201;
     static final int REQUEST_ENABLE_VPN = 1202;
-
-    private static final String[] RESTRICTED_PACKAGES = {
-            "com.android.chrome",
-            "com.google.android.apps.chrome",
-            "com.google.android.googlequicksearchbox",
-            "com.google.android.gm",
-            "com.google.android.youtube",
-            "com.android.vending",
-            "com.google.android.packageinstaller",
-            "com.android.packageinstaller",
-            "com.google.android.permissioncontroller",
-            "com.android.permissioncontroller",
-            "com.android.settings"
-    };
 
     private final Context context;
     private final DevicePolicyManager dpm;
@@ -72,8 +51,6 @@ final class PolicyController {
             } catch (PackageManager.NameNotFoundException | RuntimeException ignored) {
                 // The VPN must be approved before some devices accept always-on lockdown.
             }
-            addUserRestrictions();
-            suspendRestrictedPackages(true);
         }
 
         ensureBlockingVpn(activity);
@@ -86,8 +63,6 @@ final class PolicyController {
 
         if (isDeviceOwner()) {
             try {
-                clearUserRestrictions();
-                suspendRestrictedPackages(false);
                 dpm.setAlwaysOnVpnPackage(admin, null, false);
                 dpm.clearDeviceOwnerApp(context.getPackageName());
             } catch (PackageManager.NameNotFoundException | RuntimeException ignored) {
@@ -119,71 +94,5 @@ final class PolicyController {
         Intent serviceIntent = new Intent(activity, BlockingVpnService.class)
                 .setAction(BlockingVpnService.ACTION_START);
         activity.startForegroundService(serviceIntent);
-    }
-
-    private void addUserRestrictions() {
-        for (String restriction : managedRestrictions()) {
-            try {
-                dpm.addUserRestriction(admin, restriction);
-            } catch (RuntimeException ignored) {
-                // OEM builds can reject individual restrictions.
-            }
-        }
-    }
-
-    private void clearUserRestrictions() {
-        for (String restriction : managedRestrictions()) {
-            try {
-                dpm.clearUserRestriction(admin, restriction);
-            } catch (RuntimeException ignored) {
-                // Continue clearing whatever the device accepts.
-            }
-        }
-    }
-
-    private List<String> managedRestrictions() {
-        List<String> restrictions = new ArrayList<>(Arrays.asList(
-                UserManager.DISALLOW_ADD_USER,
-                UserManager.DISALLOW_APPS_CONTROL,
-                UserManager.DISALLOW_CONFIG_BLUETOOTH,
-                UserManager.DISALLOW_CONFIG_CREDENTIALS,
-                UserManager.DISALLOW_CONFIG_MOBILE_NETWORKS,
-                UserManager.DISALLOW_CONFIG_TETHERING,
-                UserManager.DISALLOW_CONFIG_VPN,
-                UserManager.DISALLOW_CONFIG_WIFI,
-                UserManager.DISALLOW_DEBUGGING_FEATURES,
-                UserManager.DISALLOW_FACTORY_RESET,
-                UserManager.DISALLOW_INSTALL_APPS,
-                UserManager.DISALLOW_INSTALL_UNKNOWN_SOURCES,
-                UserManager.DISALLOW_MODIFY_ACCOUNTS,
-                UserManager.DISALLOW_SAFE_BOOT,
-                UserManager.DISALLOW_SHARE_LOCATION,
-                UserManager.DISALLOW_UNINSTALL_APPS
-        ));
-        return restrictions;
-    }
-
-    private void suspendRestrictedPackages(boolean suspended) {
-        PackageManager packageManager = context.getPackageManager();
-        Set<String> packages = new HashSet<>(Arrays.asList(RESTRICTED_PACKAGES));
-        packages.remove(context.getPackageName());
-
-        List<String> installed = new ArrayList<>();
-        for (String packageName : packages) {
-            try {
-                packageManager.getPackageInfo(packageName, 0);
-                installed.add(packageName);
-            } catch (PackageManager.NameNotFoundException ignored) {
-                // Not installed on this device.
-            }
-        }
-
-        if (!installed.isEmpty()) {
-            try {
-                dpm.setPackagesSuspended(admin, installed.toArray(new String[0]), suspended);
-            } catch (RuntimeException ignored) {
-                // Package suspension support varies by package and device policy mode.
-            }
-        }
     }
 }

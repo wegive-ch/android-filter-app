@@ -97,24 +97,22 @@ app/build/outputs/apk/release/app-release.apk
 
 ## Device-Owner Provisioning
 
-For full blocking behavior, install on a freshly reset device before adding accounts, then run:
+Install on a freshly reset device before adding accounts, then run:
 
 ```bash
 adb install app/build/outputs/apk/release/app-release-unsigned.apk
 adb shell dpm set-device-owner ch.wegive.androidfilter/.WeGiveFilterDeviceAdminReceiver
 ```
 
-After provisioning, open the app and set the first-run password. The app applies:
+After provisioning, open the app and set the first-run password. Device-owner mode is used to keep Android from deleting the owner app directly. The app intentionally does not apply broad kiosk restrictions, so the device can still open Settings, enable USB debugging, use Files, and change normal device configuration.
 
-- lock-task mode for its own package
+The app applies:
+
+- device-owner protection against direct app deletion
 - an always-on lockdown VPN that routes internet traffic into the app and discards it
-- app install/uninstall and unknown-source restrictions
-- Wi-Fi, VPN, tethering, Bluetooth, mobile network, account, safe boot, factory reset, location sharing, debugging, and app-control restrictions where Android permits them
-- package suspension for common browsers, Play Store, package installers, search, YouTube, Gmail, and Settings when installed and suspendable
+- cleanup for legacy restrictive policies from older builds
 
-Allowed music/gallery behavior depends on the device image and installed packages. For production, replace the restricted package list in `PolicyController` with an allowlist/denylist for your exact device fleet.
-
-The app requests VPN approval when needed. In device-owner mode it also attempts to set itself as the always-on lockdown VPN so network access remains blocked.
+The app requests VPN approval when needed. In device-owner mode it also attempts to set itself as the always-on lockdown VPN so network access remains blocked. It does not suspend Settings, Play Store, package installers, Files, or other apps.
 
 ## User Flow
 
