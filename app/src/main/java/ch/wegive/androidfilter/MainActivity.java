@@ -64,9 +64,8 @@ public class MainActivity extends Activity {
             }
             PasswordStore.saveInitialPassword(this, password);
             policyController.applyFilter(this);
-            root.removeAllViews();
-            addIcon();
-            addText("Succeeded. The filter is on.", 22, true).setGravity(Gravity.CENTER);
+            toast("Succeeded. The filter is on.");
+            render();
         });
 
         root.addView(passwordInput);
@@ -110,7 +109,7 @@ public class MainActivity extends Activity {
                         policyController.clearPoliciesForRemoval();
                         policyController.requestUninstall(this);
                     } else if (PasswordStore.isLockedOut(this)) {
-                        toast("Incorrect password. Uninstall is locked for 10 minutes.");
+                        toast("Incorrect password. Uninstall is locked for 30 minutes.");
                     } else {
                         toast("Incorrect password.");
                     }

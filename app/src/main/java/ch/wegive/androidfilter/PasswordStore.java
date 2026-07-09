@@ -16,8 +16,8 @@ final class PasswordStore {
     private static final String KEY_USER_HASH = "user_hash";
     private static final String KEY_FAILED_ATTEMPTS = "failed_attempts";
     private static final String KEY_LOCKED_UNTIL = "locked_until";
-    private static final long LOCKOUT_MS = 10L * 60L * 1000L;
-    private static final int MAX_FAILED_ATTEMPTS = 3;
+    private static final long LOCKOUT_MS = 30L * 60L * 1000L;
+    private static final int MAX_FAILED_ATTEMPTS = 5;
 
     private PasswordStore() {
     }

@@ -1,12 +1,12 @@
 # Android Filter App
 
-Native Android kiosk/filter app for Android 13 and newer. The app lets the user set a first-run uninstall password, enables device-admin policies, starts lock-task mode, and provides a password-gated uninstall flow. A hard-coded administration password is embedded at build time from `password.secret`.
+Native Android filter app for Android 13 and newer. The app lets the user set a first-run uninstall password, enables device-admin policies, starts a blocking VPN, and provides a password-gated uninstall flow. A hard-coded administration password is embedded at build time from `password.secret`.
 
 ## Important Android Limits
 
 Android does not allow a normal sideloaded APK to make itself impossible to delete, silently take administrator rights, block every settings screen, or prevent all app launches. The strong blocking behavior in `requirements.txt` requires provisioning this app as the device owner on a freshly reset device or through enterprise management.
 
-Without device-owner provisioning, the app can request device-admin access and start lock-task mode, but Android still controls final uninstall and settings permissions.
+Without device-owner provisioning, the app can request device-admin access and start its blocking VPN, but Android still controls final uninstall and settings permissions.
 
 ## Requirements
 
@@ -120,7 +120,7 @@ The app requests VPN approval when needed. In device-owner mode it also attempts
 2. After saving the password, the app says: "Succeeded. The filter is on."
 3. Later launches show "The filter is on." and an "Uninstall app" button.
 4. Uninstall asks for the first-run password or the embedded administration password.
-5. Three incorrect uninstall attempts lock removal attempts for 10 minutes.
+5. Five incorrect uninstall attempts lock removal attempts for 30 minutes.
 
 ## Files
 
