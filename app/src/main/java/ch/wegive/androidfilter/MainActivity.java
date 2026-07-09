@@ -1,4 +1,4 @@
-package com.example.androidfilter;
+package ch.wegive.androidfilter;
 
 import android.app.Activity;
 import android.app.AlertDialog;

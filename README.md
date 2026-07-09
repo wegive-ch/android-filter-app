@@ -101,7 +101,7 @@ For full blocking behavior, install on a freshly reset device before adding acco
 
 ```bash
 adb install app/build/outputs/apk/release/app-release-unsigned.apk
-adb shell dpm set-device-owner com.example.androidfilter/.FilterDeviceAdminReceiver
+adb shell dpm set-device-owner ch.wegive.androidfilter/.WeGiveFilterDeviceAdminReceiver
 ```
 
 After provisioning, open the app and set the first-run password. The app applies:
@@ -128,14 +128,14 @@ The app requests VPN approval when needed. In device-owner mode it also attempts
 
 - `requirements.txt`: original product requirements
 - `password.secret`: build-time SHA-512 administration password hash
-- `app/src/main/java/com/example/androidfilter/MainActivity.java`: UI and password flow
-- `app/src/main/java/com/example/androidfilter/BlockingVpnService.java`: local VPN that blocks internet traffic
-- `app/src/main/java/com/example/androidfilter/PolicyController.java`: device-admin/device-owner policies
-- `app/src/main/java/com/example/androidfilter/PasswordStore.java`: salted first-run password hash and lockout
+- `app/src/main/java/ch/wegive/androidfilter/MainActivity.java`: UI and password flow
+- `app/src/main/java/ch/wegive/androidfilter/BlockingVpnService.java`: local VPN that blocks internet traffic
+- `app/src/main/java/ch/wegive/androidfilter/PolicyController.java`: device-admin/device-owner policies
+- `app/src/main/java/ch/wegive/androidfilter/PasswordStore.java`: salted first-run password hash and lockout
 - `app/src/main/res/mipmap-hdpi/icon.png`: launcher icon asset
 
 ## Commands to set it up
- - db install app-debug.apk
+ - adb.exe install app.apk
  - If it's already installed:
  -- adb install -r app-debug.apk
- -adb shell dpm set-device-owner ch.wegive.androidfilter/.WeGiveFilterDeviceAdminReceiver
+.\adb.exe shell dpm set-device-owner ch.wegive.androidfilter/.WeGiveFilterDeviceAdminReceiver

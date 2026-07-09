@@ -1,4 +1,4 @@
-package com.example.androidfilter;
+package ch.wegive.androidfilter;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -13,7 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class BlockingVpnService extends VpnService implements Runnable {
-    static final String ACTION_START = "com.example.androidfilter.START_BLOCKING_VPN";
+    static final String ACTION_START = "ch.wegive.androidfilter.START_BLOCKING_VPN";
 
     private static final String CHANNEL_ID = "filter_vpn";
     private static final int NOTIFICATION_ID = 42;

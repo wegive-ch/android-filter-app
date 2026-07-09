@@ -1,4 +1,4 @@
-package com.example.androidfilter;
+package ch.wegive.androidfilter;
 
 import android.content.Context;
 import android.content.SharedPreferences;

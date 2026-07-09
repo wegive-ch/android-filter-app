@@ -1,4 +1,4 @@
-package com.example.androidfilter;
+package ch.wegive.androidfilter;
 
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
@@ -41,7 +41,7 @@ final class PolicyController {
     PolicyController(Context context) {
         this.context = context.getApplicationContext();
         this.dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        this.admin = new ComponentName(context, FilterDeviceAdminReceiver.class);
+        this.admin = new ComponentName(context, WeGiveFilterDeviceAdminReceiver.class);
     }
 
     boolean isAdminActive() {
