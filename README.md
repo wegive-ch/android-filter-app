@@ -133,7 +133,7 @@ The app requests VPN approval when needed. In device-owner mode it also attempts
 - `app/src/main/res/mipmap-hdpi/icon.png`: launcher icon asset
 
 ## Commands to set it up
- - adb.exe install app.apk
+ - .\adb.exe install app.apk
  - If it's already installed:
- -- adb install -r app-debug.apk
+ -- .\adb.exe install -r app-debug.apk
 .\adb.exe shell dpm set-device-owner ch.wegive.androidfilter/.WeGiveFilterDeviceAdminReceiver
